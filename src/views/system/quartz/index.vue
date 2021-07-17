@@ -35,12 +35,6 @@
           <el-form-item label="description">
             <el-input v-model="form.description" style="width: 300px;" />
           </el-form-item>
-          <el-form-item label="任务状态">
-            <el-radio-group v-model="form.isPause" style="width: 220px">
-              <el-radio :label="false">启用</el-radio>
-              <el-radio :label="true">暂停</el-radio>
-            </el-radio-group>
-          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
@@ -158,7 +152,7 @@ export default {
         this.delLoading = false
         this.$refs[id].doClose()
       })
-    },
+    }
   }
 }
 </script>
