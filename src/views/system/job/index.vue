@@ -61,7 +61,7 @@ export default {
   components: { eHeader, eForm, crudOperation, pagination, udOperation },
   cruds() {
     return CRUD({
-      title: '岗位',
+      title: '场馆',
       url: 'api/job',
       sort: ['jobSort,asc', 'id,desc'],
       crudMethod: { ...crudJob }
