@@ -30,6 +30,7 @@
       </el-table>
       <!--分页组件-->
       <pagination />
+      <el-button type="button" @click="sendMsg">ToServer</el-button>
     </div>
   </div>
 </template>
@@ -40,6 +41,9 @@ import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
+import { getToken } from '@/utils/auth' // getToken from cookie
+import SockJS from 'sockjs-client'
+import Stomp from 'webstomp-client'
 
 const defaultForm = { id: null, deptId: null, jobId: null, name: null }
 export default {
@@ -60,12 +64,54 @@ export default {
         id: [
           { required: true, message: '不能为空', trigger: 'blur' }
         ]
-      }}
+      },
+      socket: null,
+      stompClient: null
+    }
+  },
+  mounted() {
+    this.connect()
+  },
+  destroyed() {
+    this.disconnect()
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
+    },
+    connect() {
+      const token = '?Authorization=' + `${getToken()}`
+      const url = process.env.VUE_APP_BASE_API + crudTesting.linkWebsocket.replace(':id', token)
+      this.socket = new SockJS(url)
+      this.stompClient = Stomp.over(this.socket)
+      this.stompClient.connect(
+        { },
+        frame => {
+          this.connected = true
+          // 发送的信息只要订阅这个地址就能获取到
+          this.stompClient.subscribe('/topic/chatRoom', tick => {
+            // const messageResponse = JSON.parse(tick.body)
+            console.log(tick)
+          })
+        }, error => {
+          console.log('error')
+          console.log(error)
+
+          this.connected = false
+        }
+      )
+    },
+    disconnect() {
+      this.stompClient.disconnect(function() {
+        alert('See you next time!')
+      })
+    },
+    sendMsg() {
+      if (this.stompClient && this.stompClient.connected) {
+        const message = { 'username': 'Jackie Chan' }
+        this.stompClient.send('/app/chatRoom.send', JSON.stringify(message))
+      }
     }
   }
 }

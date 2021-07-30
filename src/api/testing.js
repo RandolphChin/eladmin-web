@@ -24,4 +24,5 @@ export function edit(data) {
   })
 }
 
-export default { add, edit, del }
+export const linkWebsocket = `/api/my-chat-app:id`
+export default { add, edit, del, linkWebsocket }
