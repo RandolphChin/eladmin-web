@@ -46,3 +46,16 @@ cruds() {
     return CRUD({ title: '图片', idField: 'pictureId', sort: 'pictureId,desc', url: 'api/pictures', crudMethod: { ...crudPic }})
   }
 ```
+#### 前端查询条件设置默认值
+```
+crud() 方法中添加 query 对象即可，不可以使用 this.crud.query['planMonth'] 进行默认值赋值
+  cruds() {
+    return CRUD({ title: '专业室周检计划', url: 'api/planPeriodSchedule/studioMeterageType', crudMethod: { ...crudPlanPeriodSchedule },
+      query: {
+      // 设置默认值
+        planMonth: new Date().getFullYear() + '-' + (new Date().getMonth() + 1),
+        planYear: new Date().getFullYear() + ''
+      }
+    })
+  },
+```

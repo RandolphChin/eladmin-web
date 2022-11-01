@@ -118,7 +118,7 @@
               ref="upload"
               :action="uploadURL"
               list-type="picture-card"
-              :class="{hide:hideUpload}"
+              :class="{ disabled: hideUpload}"
               :on-preview="handlePreview"
               :on-remove="remove"
               :on-change="uploadChange"
@@ -234,7 +234,7 @@ export default {
       previewPath: '',
       previewVisible: false,
       hideUpload: false,
-      limitCount: 1,
+      limitCount: 10,
       currentRow: {
         attachs: [],
         allImageDialog: false,
@@ -260,6 +260,7 @@ export default {
     dialogOpen(val) {
       if (!val) {
         this.headFileList = []
+        this.hideUpload = false
       }
     }
   },
@@ -341,6 +342,7 @@ export default {
     viewDetail(data) {
       this.crud.toEdit(data)
       this.crud.showConfirmBtn = false
+      this.hideUpload = true
     },
     viewAttach(data) {
       crudLocalStorage.list({ 'storageId': data.attach }).then(resp => {
@@ -370,5 +372,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+</style>
+<style>
+.disabled .el-upload--picture-card {
+  display: none !important;
 }
 </style>
